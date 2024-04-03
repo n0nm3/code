@@ -9,49 +9,52 @@
 <body>
     <h1>Vérificateur de liens de phishing</h1>
     <p>Renseignez le lien que vous souhaitez vérifier :</p>
-    <form action="./phishing_checker.php" method="post">
-        <input type="text" name="link" placeholder="Entrez le lien ici" required>
+    <form id="phishingForm" action="./phishing_checker.php" method="post">
+        <input type="text" id="linkInput" name="link" placeholder="Entrez le lien ici" required>
         <button type="submit">Vérifier</button>
     </form>
     <div id="result"></div>
 
     <script>
-        //afficher le résultat de la vérification
+        // Fonction pour afficher le résultat de la vérification
         function showResult(result) {
             document.getElementById("result").innerHTML = result;
         }
 
-        // Fonction pour envoyer la requête à l'API PHP
-        function checkPhishing() {
-            var link = document.querySelector("input[name='link']").value;
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "./phishing_checker.php", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        showResult(xhr.responseText);
-                    } else {
-                        showResult("Une erreur s'est produite lors de la vérification.");
-                    }
+        // Fonction pour vérifier le phishing
+        function checkPhishing(event) {
+            event.preventDefault(); // Empêcher le comportement par défaut du formulaire
+
+            var link = document.getElementById("linkInput").value.trim(); // Retirer les espaces autour du lien
+
+            // Vérifier si le lien commence par "http://" ou "https://"
+            if (link.startsWith("http://") || link.startsWith("https://")) {
+                // Vérifier si le lien se termine par "/"
+                if (link.endsWith("/")) {
+                    link = link.slice(0, -1); // Retirer le "/" final
                 }
-            };
-            xhr.send("link=" + link);
+
+                // Envoyer la requête AJAX
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "./phishing_checker.php", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            showResult(xhr.responseText); // Afficher le résultat
+                        } else {
+                            showResult("Une erreur s'est produite lors de la vérification.");
+                        }
+                    }
+                };
+                xhr.send("link=" + encodeURIComponent(link)); // Encodage du lien pour l'envoi
+            } else {
+                showResult("Ceci n'est pas un lien");
+            }
         }
 
-        // Soumettre le formulaire lorsque l'utilisateur appuie sur "Entrée"
-        document.querySelector("input[name='link']").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                checkPhishing();
-            }
-        });
-
-        // Vérifier le phishing lorsque le formulaire est soumis
-        document.querySelector("form").addEventListener("submit", function(event) {
-            event.preventDefault();
-            checkPhishing();
-        });
+        // Attacher la fonction de vérification au formulaire
+        document.getElementById("phishingForm").addEventListener("submit", checkPhishing);
     </script>
 </body>
 </html>
