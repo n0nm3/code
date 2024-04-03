@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vérificateur de liens de phishing</title>
+</head>
+<body>
+    <h1>Vérificateur de liens de phishing</h1>
+    <p>Renseignez le lien que vous souhaitez vérifier :</p>
+    <form action="./phishing_checker.php" method="post">
+        <input type="text" name="link" placeholder="Entrez le lien ici" required>
+        <button type="submit">Vérifier</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        //afficher le résultat de la vérification
+        function showResult(result) {
+            document.getElementById("result").innerHTML = result;
+        }
+
+        // Fonction pour envoyer la requête à l'API PHP
+        function checkPhishing() {
+            var link = document.querySelector("input[name='link']").value;
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "./phishing_checker.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        showResult(xhr.responseText);
+                    } else {
+                        showResult("Une erreur s'est produite lors de la vérification.");
+                    }
+                }
+            };
+            xhr.send("link=" + link);
+        }
+
+        // Soumettre le formulaire lorsque l'utilisateur appuie sur "Entrée"
+        document.querySelector("input[name='link']").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                checkPhishing();
+            }
+        });
+
+        // Vérifier le phishing lorsque le formulaire est soumis
+        document.querySelector("form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            checkPhishing();
+        });
+    </script>
+</body>
+</html>
