@@ -18,7 +18,6 @@ function connectDB() {
 
 // Fonction pour vérifier si le lien est un phishing
 function checkPhishingLink($link) {
-    // Connexion à la base de données
     $conn = connectDB();
 
     // Échapper les caractères spéciaux pour éviter les injections SQL
@@ -34,16 +33,14 @@ function checkPhishingLink($link) {
     } else {
         return false;
     }
-
-    // Fermer la connexion à la base de données
     $conn->close();
 }
 
-// Vérifier si un lien a été soumis
+// Vérifier si un lien est soumis
 if (isset($_POST['link'])) {
     $link = $_POST['link'];
 
-    // Vérifier si le lien est un phishing
+    // Vérif si c'est un phishing
     $isPhishing = checkPhishingLink($link);
 
     // Si phishing, alors on le dit
