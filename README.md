@@ -23,4 +23,4 @@ C’est comme un détecteur de mensonges pour les sites web, il vous indique si 
 <h1>Besoin d'Aide ? </h1> 
 Si vous rencontrez des problèmes ou si vous avez des questions sur l'utilisation de l'application, n'hésitez pas à nous contacter. Nous sommes là pour vous aider à naviguer en toute sécurité sur Internet.
 
-<a href="#">Un problème ?</a>
+<a href="https://github.com/n0nm3/code/issues">Un problème ?</a>
